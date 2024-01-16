@@ -2,6 +2,42 @@ import { useState, createContext } from 'react';
 
 export const Context = createContext();
 export const ContextProvider = (props) => {
+  const [nodeKeyword, setNodeKeyword] = useState([
+    '想法關鍵字：',
+    '太陽能、光電效應、太陽能板、能量轉換、環保、可再生能源、發電原理、電能儲存、太陽能利用、綠色能源',
+  ]);
+  const [nodeType, setNodeType] = useState([
+    '想法節點: 4 個',
+    '資訊節點: 8 個',
+    '提問節點: 8 個',
+    '實驗節點: 3 個',
+    '課程紀錄: 1 個',
+  ]);
+  const [nodeTypeMode, setNodeTypeMode] = useState([
+    '顯著行為模式：',
+    '提問 <- 資訊：4次',
+    '提問 <- 想法：4次',
+  ]);
+  const [nodeSentiment, setNodeSentiment] = useState([
+    '正面話語節點: 20 個',
+    '負面話語節點: 4 個',
+  ]);
+  const [nodeScaffold, setNodeScaffold] = useState([
+    '話語鷹架使用：',
+    '我的想法：6次',
+    '我想知道：6次',
+    '我的總結：2次',
+    '舉例和參考來源：5次',
+    '我覺得更好的想法：3次',
+    '這個想法不能解釋：2次',
+  ]);
+  const [reflectionSelf, setReflectionSelf] = useState({
+    想法摘要: nodeKeyword,
+    行為分析: nodeType,
+    情緒分析: nodeSentiment,
+    行為模式分析: nodeTypeMode,
+    話語鷹架分析: nodeScaffold,
+  });
   const [reflectionType, setReflectionType] = useState([
     '自己',
     '活動',
@@ -12,7 +48,7 @@ export const ContextProvider = (props) => {
     自己: ['想法摘要', '行為分析', '情緒分析'],
     活動: ['行為分析', '情緒分析'],
     目標: ['想法總結'],
-    策略: ['行為分析', '想法分析'],
+    策略: ['行為模式分析', '話語鷹架分析'],
   });
   const [message, setMessage] = useState({});
   const [systemlog, setSystemlog] = useState([]);
@@ -100,6 +136,8 @@ export const ContextProvider = (props) => {
         setReflectionType,
         reflection,
         setReflection,
+        reflectionSelf,
+        setReflectionSelf,
       }}
     >
       {props.children}

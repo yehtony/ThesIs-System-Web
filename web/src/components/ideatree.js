@@ -4,6 +4,7 @@ import 'vis-network/styles/vis-network.css';
 import { useContext } from 'react';
 import { Context } from '../contexts/context.js';
 import ChatBot from './chatbot.js';
+import ChatBotNew from './chatbotnew.js'
 // import img_idea from './img/soft-scraps-icons/idea.png';
 // import img_info from './img/soft-scraps-icons/info.png';
 // import img_question from './img/soft-scraps-icons/idea.png';
@@ -199,7 +200,7 @@ export default function NodeTree() {
     <div className="h-screen static">
       <div id="mynetwork" className='h-screen'/>
       <div className="absolute top-0 right-0">
-        <ChatBot />
+        <ChatBotNew />
       </div>
       {/* <div className="absolute top-0 right-0">
           <ChatBot />

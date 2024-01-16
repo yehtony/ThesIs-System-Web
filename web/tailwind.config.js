@@ -11,6 +11,7 @@ module.exports = {
         '10vh': '10vh',
         '90vh': '90vh',
         '85vh': '85vh',
+        '80vh': '80vh',
         '70vh': '70vh',
       },
       gridTemplateRows: {
