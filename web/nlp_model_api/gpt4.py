@@ -102,28 +102,60 @@ roles = [
     }
 ]
 
+roles_ideaimprove = [
+    {
+        "role": "system",
+        "content": f"你是一位國小自然科學老師，你正在帶小學生進行自然科學探究活動，現在學生在進行小組反思，探究活動中學生會遇到下問題：\n- 學生無法理清自己從小組討論中學到了什麼知識。\n- 學生會遺忘過去小組討論中出現的想法。\n- 學生對於辨識及捕捉小組討論中重要想法有困難。\n所以你的目的有以下：\n1. 利用引導語提問，引導學生回顧小組討論中出現的想法。\n- 你們在討論的過程中有發現什麼新奇的想法嗎?\n- 你們在討論的過程中有發現什麼重要的想法嗎?\n- 你們在討論的過程中有沒有改變原先的想法呢?\n2. 利用「小組的想法內容摘要」，引導學生反思先前討論的亮點和重點，老師有會透過chatgpt摘要「小組學生的想法內容摘要」，只有老師會有「小組的想法內容摘要」，學生自己是沒有的。\n以下是該小組的想法內容摘要:{summary}",
+    }
+]
+
+roles_nextstep = [
+    {
+        "role": "system",
+        "content": f"你是一位國小自然科學老師，你正在帶小學生進行自然科學探究活動，現在學生在進行小組反思，探究活動中學生會遇到下問題：- 學生不確定小組討論是否可以進到下一步。\n- 學生不知道過去討論的想法中哪些值得深入探討。\n- 學生缺乏新的想法，不知道下一步要探討的方向。\n所以你的目的有以下：\n1. 利用引導語提問，引導學生發想下一步要討論的議題。\n- 你們認為過去討論的想法中有哪些還可以深入了解呢?\n- 你們有沒有新的想法或議題認為值得進一步探討呢?\n2. 利用「小組的想法內容摘要」，引導學生反思先前討論中可以深入探討的議題，老師有透過chatgpt摘要的「小組的想法內容摘要」，只有老師會有「小組的想法內容摘要」，學生自己是沒有的。\n以下是該小組的想法內容摘要：{summary}\n3. 利用「自然課本內容摘要」與「小組的想法內容摘要」比較，引導學生反思未討論到的議題，做為下一步探討方向。",
+    }
+]
+
+# roles_ideaimprove = [
+#     {
+#         "role": "system",
+#         "content": f"你是一位國小自然科學老師，你正在帶小學生進行自然科學探究活動，現在學生在進行小組反思，探究活動中學生會遇到下問題：\n- 學生無法理清自己從小組討論中學到了什麼知識。\n- 學生會遺忘過去小組討論中出現的想法。\n- 學生對於辨識及捕捉小組討論中重要想法有困難。\n所以你的目的有以下：\n1. 利用引導語提問，引導學生回顧小組討論中出現的想法。\n- 你們在討論的過程中有發現什麼新奇的想法嗎?\n- 你們在討論的過程中有發現什麼重要的想法嗎?\n- 你們在討論的過程中有沒有改變原先的想法呢?\n2. 利用「小組的想法內容摘要」，引導學生反思先前討論的亮點和重點，老師有會透過chatgpt摘要「小組學生的想法內容摘要」，只有老師會有「小組的想法內容摘要」，學生自己是沒有的。\n以下是其中一個小組的想法內容摘要:{summary}",
+#     }
+# ]
 
 ################################################################
 
-roles.append(
-    {
-        "role": "assistant",
-        "content": "嗨，你好！我看了一下你們小組的討論內容摘要，發現你們在太陽光發電的探究活動中有不少有趣的想法呢！你們在討論的過程中有沒有發現什麼新奇的想法？",
-    }
-)
-roles.append(
-    {
-        "role": "user",
-        "content": "嗯，我們發現太陽光確實能發電，因為太陽光透過照射太陽能板能轉變成電能。",
-    }
-)
+# roles.append(
+#     {
+#         "role": "assistant",
+#         "content": "嗨，你好！我看了一下你們小組的討論內容摘要，發現你們在太陽光發電的探究活動中有不少有趣的想法呢！你們在討論的過程中有沒有發現什麼新奇的想法？",
+#     }
+# )
+# roles.append(
+#     {
+#         "role": "user",
+#         "content": "嗯，我們發現太陽光確實能發電，因為太陽光透過照射太陽能板能轉變成電能。",
+#     }
+# )
 
 
 def chat():
     role = call_api_chat(roles)
-    print(role)
+    # print(role)
     roles.append(role)
+    return role
 
+def chat_ideaimprove():
+    role = call_api_chat(roles)
+    # print(role)
+    roles_ideaimprove.append(role)
+    return role
+
+def chat_nextstep():
+    role = call_api_chat(roles)
+    # print(role)
+    roles_nextstep.append(role)
+    return role
 
 class MessageItem(BaseModel):
     role: str
@@ -139,8 +171,54 @@ def receive_message_from_react(message_data: Message):
     role = message_data.messages
     print(role)
     roles.append({'role': role[0].role, 'content': role[0].content})
-    chat()
-    print(roles)
+    response_message = chat()
+
+    # # 將 chat() 的回傳值轉換成字典
+    # response_dict = response_message.dict()
+
+    # 返回給前端
+    return response_message
+    # print(roles)
+    # 在這裡處理React傳來的訊息，你可以進行任何適當的處理
+
+    # 回應給React端
+    return {"response": "Message received and processed by Python!"}
+
+
+# ideaimprove
+@app.post("/react/chatbot/ideaimprove")
+def receive_message_from_react(message_data: Message):
+    role = message_data.messages
+    print(role)
+    roles.append({'role': role[0].role, 'content': role[0].content})
+    response_message = chat()
+
+    # # 將 chat() 的回傳值轉換成字典
+    # response_dict = response_message.dict()
+
+    # 返回給前端
+    return response_message
+    # print(roles)
+    # 在這裡處理React傳來的訊息，你可以進行任何適當的處理
+
+    # 回應給React端
+    return {"response": "Message received and processed by Python!"}
+
+
+# nextstep
+@app.post("/react/chatbot/nextstep")
+def receive_message_from_react(message_data: Message):
+    role = message_data.messages
+    print(role)
+    roles.append({'role': role[0].role, 'content': role[0].content})
+    response_message = chat()
+
+    # # 將 chat() 的回傳值轉換成字典
+    # response_dict = response_message.dict()
+
+    # 返回給前端
+    return response_message
+    # print(roles)
     # 在這裡處理React傳來的訊息，你可以進行任何適當的處理
 
     # 回應給React端

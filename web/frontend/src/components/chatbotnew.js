@@ -1,5 +1,5 @@
 // /* eslint-disable no-unused-vars */
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Context } from '../contexts/context.js';
 import { RiUser5Line } from 'react-icons/ri';
 import { RiRobot2Line } from 'react-icons/ri';
@@ -9,46 +9,60 @@ import robotSay from '../img/robotsay.gif';
 import axios from 'axios';
 
 export default function ChatBot() {
-  const { reflectionType } = useContext(Context);
-  const { reflection } = useContext(Context);
-  const [reflectionValue, setReflectionValue] = useState(null);
-  const [selectedReflectionType, setSelectedReflectionType] = useState(null);
-  const [selectedReflection, setSelectedReflection] = useState(null);
-  const { reflectionSelf, setReflectionSelf } = useContext(Context);
-  const { reflectionActivity, setReflectionActivity } = useContext(Context);
-  const { reflectionGoal, setReflectionGoal } = useContext(Context);
-  const { reflectionStrategy, setReflectionStrategy } = useContext(Context);
+  // const { reflectionType } = useContext(Context);
+  // const { reflection } = useContext(Context);
+  // const [reflectionValue, setReflectionValue] = useState(null);
+  // const [selectedReflectionType, setSelectedReflectionType] = useState(null);
+  // const [selectedReflection, setSelectedReflection] = useState(null);
+  // const { reflectionSelf, setReflectionSelf } = useContext(Context);
+  // const { reflectionActivity, setReflectionActivity } = useContext(Context);
+  // const { reflectionGoal, setReflectionGoal } = useContext(Context);
+  // const { reflectionStrategy, setReflectionStrategy } = useContext(Context);
+
+  // Chat History
+  const [message, setMessage] = useState('');
+  const [userLog, setUserLog] = useState({});
+  const [messageLog, setMessageLog] = useState([]);
+  const [initial, setInitial] = useState(true);
 
   // python api
   const sendMessageToPython = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/react/chatbot', {
-        messages: [{ role: 'user', content: 'message' }],
-      });
-
+      const response = await axios.post(
+        'http://127.0.0.1:8000/react/chatbot/nextstep',
+        {
+          messages: [{ role: 'user', content: message }], // 使用最新的 messageLog
+        }
+      );
       console.log('Python response:', response.data);
+      const updatedMessageLog = [...messageLog, response.data];
+      setMessageLog(updatedMessageLog);
+      setMessage('');
     } catch (error) {
       console.error('Error sending message to Python:', error);
     }
   };
 
-  // Robot Button
-  const [clickRobot, setClickRobot] = useState(true);
-  const handleClick = () => {
-    setClickRobot(!clickRobot);
-  };
+  useEffect(() => {
+    if (initial == false) {
+      // 在這裡執行當 messageLog 更新後的邏輯
+      sendMessageToPython();
+    }
+    setInitial(false);
+  }, [userLog]);
 
-  // Chat History
-  const [message, setMessage] = useState({});
-  const [messageLog, setMessageLog] = useState([]);
-  const updateChatLog = async (message) => {
+  const updateChatLog = () => {
     const updatedMessageLog = [
       ...messageLog,
       { role: 'user', content: message },
     ];
+    setUserLog(updatedMessageLog);
     setMessageLog(updatedMessageLog);
-    sendMessageToPython();
-    console.log(messageLog);
+  };
+  // Robot Button
+  const [clickRobot, setClickRobot] = useState(true);
+  const handleClick = () => {
+    setClickRobot(!clickRobot);
   };
 
   return (
@@ -92,9 +106,6 @@ export default function ChatBot() {
                           <RiUser5Line className="h-6 w-6" />
                         )}
                       </div>
-                      {/* <div className='chat-header'>
-                  {message.role}
-                </div> */}
                       <div className="chat-bubble text-sm items-center">
                         {message.content}
                       </div>
@@ -109,13 +120,13 @@ export default function ChatBot() {
               <textarea
                 placeholder="使用者訊息"
                 className="input input-bordered w-full text-md p-3 h-full"
-                // value={message}
+                value={message}
                 style={{ lineHeight: '1.5' }}
                 onChange={(e) => setMessage(e.target.value)}
               />
               <RiSendPlane2Line
                 className="btn btn-ghost btn-xs h-10 w-10"
-                onClick={() => updateChatLog(message)}
+                onClick={() => updateChatLog()}
               ></RiSendPlane2Line>
             </div>
           </div>
