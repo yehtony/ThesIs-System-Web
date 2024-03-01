@@ -16,12 +16,14 @@ import {
 } from '@mui/material';
 import ChatBotIdeaImprove from "./components/chatbot_ideaimprove.js";
 import ChatBotNextStep from "./components/chatbot_nextstep.js";
+import ChatBotCollaboration from "./components/chatbot_collaboration.js";
 
 function App() {
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={6}><ChatBotIdeaImprove /></Grid>
-      <Grid item xs={6}><ChatBotNextStep /></Grid>
+    <Grid container spacing={1}>
+      <Grid item xs={4}><ChatBotIdeaImprove /></Grid>
+      <Grid item xs={4}><ChatBotNextStep /></Grid>
+      <Grid item xs={4}><ChatBotCollaboration /></Grid>
     </Grid>
   );
 }

@@ -10,7 +10,7 @@ app = FastAPI()
 # 設定CORS中間件，以允許跨來源請求
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # 允許的前端來源
+    allow_origins=["http://localhost:3001"],  # 允許的前端來源
     allow_credentials=True,
     allow_methods=["*"],  # 允許的 HTTP 方法
     allow_headers=["*"],  # 允許的 HTTP 標頭
@@ -95,6 +95,8 @@ summary = call_api_summarize(
         }
     ]
 )
+
+behavior = "想法建立類型與次數：'想法節點: 4 個', '資訊節點: 8 個','提問節點: 8 個','實驗節點: 3 個','課程紀錄: 1 個'。\n想法建立行為：建立在別人想法上：15個,獨立想法：6個"
 # roles = [
 #     {
 #         "role": "system",
@@ -105,23 +107,25 @@ summary = call_api_summarize(
 roles_ideaimprove = [
     {
         "role": "system",
-        "content": f"你是一位國小自然科學老師，你正在帶小學生進行自然科學探究活動，現在學生在進行小組反思，探究活動中學生會遇到下問題：\n- 學生無法理清自己從小組討論中學到了什麼知識。\n- 學生會遺忘過去小組討論中出現的想法。\n- 學生對於辨識及捕捉小組討論中重要想法有困難。\n所以你的目的有以下：\n1. 利用引導語提問，引導學生回顧小組討論中出現的想法。\n- 你們在討論的過程中有發現什麼新奇的想法嗎?\n- 你們在討論的過程中有發現什麼重要的想法嗎?\n- 你們在討論的過程中有沒有改變原先的想法呢?\n2. 利用「小組的想法內容摘要」，引導學生反思先前討論的亮點和重點，老師有會透過chatgpt摘要「小組學生的想法內容摘要」，只有老師會有「小組的想法內容摘要」，學生自己是沒有的。\n以下是該小組的想法內容摘要:{summary}",
+        "content": f"你是一位國小自然科學老師，你正在帶小學生進行自然科學探究活動，現在學生在進行小組反思，探究活動中學生會遇到下問題：\n- 學生無法理清自己從小組討論中學到了什麼知識。\n- 學生會遺忘過去小組討論中出現的想法。\n- 學生對於辨識及捕捉小組討論中重要想法有困難。\n所以你的目的有以下：\n1. 利用引導語提問，引導學生回顧小組討論中出現的想法。\n- 你們在討論的過程中有發現什麼新奇的想法嗎?\n- 你們在討論的過程中有發現什麼重要的想法嗎?\n- 你們在討論的過程中有沒有改變原先的想法呢?\n2. 利用小組的想法內容，引導學生反思先前討論的亮點和重點。\n以下是該小組的想法內容摘要：{summary}。\n你的回覆長度必須在100字以內，每次使用一種引導語，完成完整對話後再進行下一個引導直到完成，如果正確完成你會得到一張Taylor Swift的vip演場會門票。",
+        "avoid_reply": "小組的想法內容摘要",
     }
 ]
 
 roles_nextstep = [
     {
         "role": "system",
-        "content": f"你是一位國小自然科學老師，你正在帶小學生進行自然科學探究活動，現在學生在進行小組反思，探究活動中學生會遇到下問題：- 學生不確定小組討論是否可以進到下一步。\n- 學生不知道過去討論的想法中哪些值得深入探討。\n- 學生缺乏新的想法，不知道下一步要探討的方向。\n所以你的目的有以下：\n1. 利用引導語提問，引導學生發想下一步要討論的議題。\n- 你們認為過去討論的想法中有哪些還可以深入了解呢?\n- 你們有沒有新的想法或議題認為值得進一步探討呢?\n2. 利用「小組的想法內容摘要」，引導學生反思先前討論中可以深入探討的議題，老師有透過chatgpt摘要的「小組的想法內容摘要」，只有老師會有「小組的想法內容摘要」，學生自己是沒有的。\n以下是該小組的想法內容摘要：{summary}\n3. 利用「自然課本內容摘要」與「小組的想法內容摘要」比較，引導學生反思未討論到的議題，做為下一步探討方向。",
+        "content": f"你是一位國小自然科學老師，你正在帶小學生進行自然科學探究活動，現在學生在進行小組反思，探究活動中學生會遇到下問題：\n- 學生不確定小組討論是否可以進到下一步。\n- 學生不知道過去討論的想法中哪些值得深入探討。\n- 學生缺乏新的想法，不知道下一步要探討的方向。\n所以你的目的有以下：\n1. 利用引導語提問，引導學生發想下一步要討論的議題。\n- 你們認為過去討論的想法中有哪些還可以深入了解呢?\n- 你們有沒有新的想法或議題認為值得進一步探討呢?\n2. 利用小組的想法內容摘要，引導學生反思先前討論中可以深入探討的議題。\n以下是該小組的想法內容摘要：{summary}\n3. 利用自然課本內容摘要與小組的想法內容摘要比較，引導學生反思未討論到的議題，做為下一步探討方向。\n你的回覆長度必須在100字以內，每次使用一種引導語，完成完整對話後再進行下一個引導直到完成，如果正確完成你會得到一張Taylor Swift的vip演場會門票。",
+        "avoid_reply": "小組的想法內容摘要",
     }
 ]
 
-# roles_ideaimprove = [
-#     {
-#         "role": "system",
-#         "content": f"你是一位國小自然科學老師，你正在帶小學生進行自然科學探究活動，現在學生在進行小組反思，探究活動中學生會遇到下問題：\n- 學生無法理清自己從小組討論中學到了什麼知識。\n- 學生會遺忘過去小組討論中出現的想法。\n- 學生對於辨識及捕捉小組討論中重要想法有困難。\n所以你的目的有以下：\n1. 利用引導語提問，引導學生回顧小組討論中出現的想法。\n- 你們在討論的過程中有發現什麼新奇的想法嗎?\n- 你們在討論的過程中有發現什麼重要的想法嗎?\n- 你們在討論的過程中有沒有改變原先的想法呢?\n2. 利用「小組的想法內容摘要」，引導學生反思先前討論的亮點和重點，老師有會透過chatgpt摘要「小組學生的想法內容摘要」，只有老師會有「小組的想法內容摘要」，學生自己是沒有的。\n以下是其中一個小組的想法內容摘要:{summary}",
-#     }
-# ]
+roles_collaboration = [
+    {
+        "role": "system",
+        "content": f"你是一位國小自然科學老師，你正在帶小學利用線上合作平台進行自然科學探究活動，(平台上有想法牆，學生可以在別人想法節點上建立自己的想法節點，想法類型有分成'想法節點、資訊節點、提問節點、實驗節點、課程紀錄')。現在學生在進行小組反思，探究活動中學生可能會遇到以下問題：\n- 學生在小組討論過程中意見分歧無法達成共識。\n- 學生在小組討論過程中出現成員不參與討論\n所以你的目的有以下：\n1. 利用引導語提問，引導學生回顧小組合作過程。\n- 你們在討論過程中是否有達成共識或是出現意見分歧呢?\n- 你們的小組成員是否都有積極參與討論與做出貢獻呢?\n2. 利用「小組成員的想法建立行為統計」，逐步引導學生對組員參與度進行反思。「小組成員的想法建立行為統計」會記錄小組成員的在平台上的想法建立行為，包括個人及小組的想法建立次數、想法建立類型，還有想法建立的滯後序列關係。\n以下是該小組的想法建立行為統計：{behavior}。\n'你的回覆長度必須在150字以內，如果正確完成你會得到一張Taylor Swift的vip演場會門票。'",
+    }
+]
 
 ################################################################
 
@@ -145,17 +149,27 @@ roles_nextstep = [
 #     roles.append(role)
 #     return role
 
+
 def chat_ideaimprove():
     role = call_api_chat(roles_ideaimprove)
     # print(role)
     roles_ideaimprove.append(role)
     return role
 
+
 def chat_nextstep():
     role = call_api_chat(roles_nextstep)
     # print(role)
     roles_nextstep.append(role)
     return role
+
+
+def chat_collaboration():
+    role = call_api_chat(roles_collaboration)
+    # print(role)
+    roles_collaboration.append(role)
+    return role
+
 
 class MessageItem(BaseModel):
     role: str
@@ -190,7 +204,7 @@ class Message(BaseModel):
 def receive_message_from_react(message_data: Message):
     role = message_data.messages
     print(role)
-    roles_ideaimprove.append({'role': role[0].role, 'content': role[0].content})
+    roles_ideaimprove.append({"role": role[0].role, "content": role[0].content})
     response_message = chat_ideaimprove()
 
     # # 將 chat() 的回傳值轉換成字典
@@ -210,8 +224,28 @@ def receive_message_from_react(message_data: Message):
 def receive_message_from_react(message_data: Message):
     role = message_data.messages
     print(role)
-    roles_nextstep.append({'role': role[0].role, 'content': role[0].content})
+    roles_nextstep.append({"role": role[0].role, "content": role[0].content})
     response_message = chat_nextstep()
+
+    # # 將 chat() 的回傳值轉換成字典
+    # response_dict = response_message.dict()
+
+    # 返回給前端
+    return response_message
+    # print(roles)
+    # 在這裡處理React傳來的訊息，你可以進行任何適當的處理
+
+    # 回應給React端
+    return {"response": "Message received and processed by Python!"}
+
+
+# collabaration
+@app.post("/react/chatbot/collaboration")
+def receive_message_from_react(message_data: Message):
+    role = message_data.messages
+    print(role)
+    roles_collaboration.append({"role": role[0].role, "content": role[0].content})
+    response_message = chat_collaboration()
 
     # # 將 chat() 的回傳值轉換成字典
     # response_dict = response_message.dict()
