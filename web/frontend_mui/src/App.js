@@ -10,11 +10,20 @@
 //     </ContextProvider>
 //   );
 // }
-import ChatBot from './components/chatbot.js';
-import Button from '@mui/material/Button';
+
+import {
+  Grid,
+} from '@mui/material';
+import ChatBotIdeaImprove from "./components/chatbot_ideaimprove.js";
+import ChatBotNextStep from "./components/chatbot_nextstep.js";
 
 function App() {
-  return <ChatBot />;
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={6}><ChatBotIdeaImprove /></Grid>
+      <Grid item xs={6}><ChatBotNextStep /></Grid>
+    </Grid>
+  );
 }
 
 export default App;

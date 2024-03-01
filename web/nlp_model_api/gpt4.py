@@ -95,12 +95,12 @@ summary = call_api_summarize(
         }
     ]
 )
-roles = [
-    {
-        "role": "system",
-        "content": f"你是一位國小自然科學老師，你正在帶小學生進行自然科學探究活動，現在學生在進行小組反思，探究活動中學生會遇到下問題：\n- 學生無法理清自己從小組討論中學到了什麼知識。\n- 學生會遺忘過去小組討論中出現的想法。\n- 學生對於辨識及捕捉小組討論中重要想法有困難。\n所以你的目的有以下：\n1. 利用引導語提問，引導學生回顧小組討論中出現的想法。\n- 你們在討論的過程中有發現什麼新奇的想法嗎?\n- 你們在討論的過程中有發現什麼重要的想法嗎?\n- 你們在討論的過程中有沒有改變原先的想法呢?\n2. 利用「小組的想法內容摘要」，引導學生反思先前討論的亮點和重點，老師有會透過chatgpt摘要「小組學生的想法內容摘要」，只有老師會有「小組的想法內容摘要」，學生自己是沒有的。\n以下是其中一個小組的想法內容摘要:{summary}",
-    }
-]
+# roles = [
+#     {
+#         "role": "system",
+#         "content": f"你是一位國小自然科學老師，你正在帶小學生進行自然科學探究活動，現在學生在進行小組反思，探究活動中學生會遇到下問題：\n- 學生無法理清自己從小組討論中學到了什麼知識。\n- 學生會遺忘過去小組討論中出現的想法。\n- 學生對於辨識及捕捉小組討論中重要想法有困難。\n所以你的目的有以下：\n1. 利用引導語提問，引導學生回顧小組討論中出現的想法。\n- 你們在討論的過程中有發現什麼新奇的想法嗎?\n- 你們在討論的過程中有發現什麼重要的想法嗎?\n- 你們在討論的過程中有沒有改變原先的想法呢?\n2. 利用「小組的想法內容摘要」，引導學生反思先前討論的亮點和重點，老師有會透過chatgpt摘要「小組學生的想法內容摘要」，只有老師會有「小組的想法內容摘要」，學生自己是沒有的。\n以下是其中一個小組的想法內容摘要:{summary}",
+#     }
+# ]
 
 roles_ideaimprove = [
     {
@@ -139,20 +139,20 @@ roles_nextstep = [
 # )
 
 
-def chat():
-    role = call_api_chat(roles)
-    # print(role)
-    roles.append(role)
-    return role
+# def chat():
+#     role = call_api_chat(roles)
+#     # print(role)
+#     roles.append(role)
+#     return role
 
 def chat_ideaimprove():
-    role = call_api_chat(roles)
+    role = call_api_chat(roles_ideaimprove)
     # print(role)
     roles_ideaimprove.append(role)
     return role
 
 def chat_nextstep():
-    role = call_api_chat(roles)
+    role = call_api_chat(roles_nextstep)
     # print(role)
     roles_nextstep.append(role)
     return role
@@ -166,23 +166,23 @@ class Message(BaseModel):
     messages: List[MessageItem]
 
 
-@app.post("/react/chatbot")
-def receive_message_from_react(message_data: Message):
-    role = message_data.messages
-    print(role)
-    roles.append({'role': role[0].role, 'content': role[0].content})
-    response_message = chat()
+# @app.post("/react/chatbot")
+# def receive_message_from_react(message_data: Message):
+#     role = message_data.messages
+#     print(role)
+#     roles.append({'role': role[0].role, 'content': role[0].content})
+#     response_message = chat()
 
-    # # 將 chat() 的回傳值轉換成字典
-    # response_dict = response_message.dict()
+#     # # 將 chat() 的回傳值轉換成字典
+#     # response_dict = response_message.dict()
 
-    # 返回給前端
-    return response_message
-    # print(roles)
-    # 在這裡處理React傳來的訊息，你可以進行任何適當的處理
+#     # 返回給前端
+#     return response_message
+#     # print(roles)
+#     # 在這裡處理React傳來的訊息，你可以進行任何適當的處理
 
-    # 回應給React端
-    return {"response": "Message received and processed by Python!"}
+#     # 回應給React端
+#     return {"response": "Message received and processed by Python!"}
 
 
 # ideaimprove
@@ -190,8 +190,8 @@ def receive_message_from_react(message_data: Message):
 def receive_message_from_react(message_data: Message):
     role = message_data.messages
     print(role)
-    roles.append({'role': role[0].role, 'content': role[0].content})
-    response_message = chat()
+    roles_ideaimprove.append({'role': role[0].role, 'content': role[0].content})
+    response_message = chat_ideaimprove()
 
     # # 將 chat() 的回傳值轉換成字典
     # response_dict = response_message.dict()
@@ -210,8 +210,8 @@ def receive_message_from_react(message_data: Message):
 def receive_message_from_react(message_data: Message):
     role = message_data.messages
     print(role)
-    roles.append({'role': role[0].role, 'content': role[0].content})
-    response_message = chat()
+    roles_nextstep.append({'role': role[0].role, 'content': role[0].content})
+    response_message = chat_nextstep()
 
     # # 將 chat() 的回傳值轉換成字典
     # response_dict = response_message.dict()
